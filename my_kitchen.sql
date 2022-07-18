@@ -1,3 +1,31 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.0
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: Jul 18, 2022 at 09:32 PM
+-- Server version: 10.4.24-MariaDB
+-- PHP Version: 8.1.6
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `my_kitchen`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ingredient`
+--
 
 CREATE TABLE `ingredient` (
   `id` int(11) NOT NULL,
@@ -15,6 +43,7 @@ CREATE TABLE `recipe` (
   `id` int(11) NOT NULL,
   `name` text NOT NULL,
   `description` text NOT NULL,
+  `taste` text NOT NULL,
   `type` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -28,6 +57,19 @@ CREATE TABLE `recipe_ingredient` (
   `id` int(11) NOT NULL,
   `recipeId` int(11) NOT NULL,
   `ingredientId` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `step`
+--
+
+CREATE TABLE `step` (
+  `id` int(11) NOT NULL,
+  `recipeId` int(11) NOT NULL,
+  `stepOrder` int(11) NOT NULL,
+  `content` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -53,6 +95,12 @@ ALTER TABLE `recipe_ingredient`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `step`
+--
+ALTER TABLE `step`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -72,6 +120,12 @@ ALTER TABLE `recipe`
 -- AUTO_INCREMENT for table `recipe_ingredient`
 --
 ALTER TABLE `recipe_ingredient`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `step`
+--
+ALTER TABLE `step`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
