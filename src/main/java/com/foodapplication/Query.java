@@ -1,10 +1,16 @@
 package com.foodapplication;
 
 import com.foodapplication.entity.Ingredient;
+import com.foodapplication.entity.Recipe;
+import com.foodapplication.enums.Taste;
+import com.foodapplication.enums.Type;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Query extends Database {
 
@@ -24,4 +30,39 @@ public class Query extends Database {
         }
     }
 
+    public List<Recipe> getRecipes(String searchText, List<Taste> tastes, List<Type> types) {
+        List<Recipe> recipeList = new ArrayList<>();
+
+        String query = null;
+        String tastesValues = Arrays.stream(Type.values()).map(Enum::name).collect(Collectors.joining(","));
+        String typesValues = Arrays.stream(Taste.values()).map(Enum::name).collect(Collectors.joining(","));
+
+        if (Objects.isNull(searchText) && Objects.isNull(tastes) && Objects.isNull(types)) {
+            query = "SELECT * FROM Booking";
+        } else if (Objects.isNull(tastes) && Objects.isNull(types)) {
+            query = "SELECT * FROM recipe where name LIKE '%" + searchText + "%'";
+        } else if (Objects.isNull(tastes)) {
+            query = "SELECT * FROM recipe where name LIKE '%" + searchText + "%' AND type IN (" + tastesValues + ")";
+        } else if (Objects.isNull(types)) {
+            query = "SELECT * FROM recipe where name LIKE '%" + searchText + "%' AND type IN (" + typesValues + ")";
+        } else if (Objects.isNull(searchText) && Objects.isNull(tastes)) {
+            query = "SELECT * FROM recipe where type IN (" + typesValues + ")";
+        } else if (Objects.isNull(searchText) && Objects.isNull(types)) {
+            query = "SELECT * FROM recipe where type IN (" + tastesValues + ")";
+        }
+
+        try {
+            Statement statement = DBconnect.createStatement();
+            ResultSet rs = statement.executeQuery(query);
+
+            while (rs.next()) {
+                recipeList.add(new Recipe(Long.parseLong(rs.getString("id")), rs.getString("name"), rs.getString("description"),
+                        Taste.valueOf(rs.getString("taste")), Type.valueOf(rs.getString("type"))));
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error" + ex.getMessage());
+        }
+        return recipeList;
+
+    }
 }
