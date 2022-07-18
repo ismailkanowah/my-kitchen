@@ -12,6 +12,7 @@ public class Recipe {
     private String description;
 
     private Taste taste;
+    private Type type;
 
     public Taste getTaste() {
         return taste;
@@ -21,7 +22,6 @@ public class Recipe {
         this.taste = taste;
     }
 
-    private Type type;
 
     public Long getId() {
         return id;
@@ -68,5 +68,16 @@ public class Recipe {
         this.description = description;
         this.taste = taste;
         this.type = type;
+    }
+
+    @Override
+    public String toString() {
+        return "Recipe{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", taste=" + taste +
+                ", type=" + type +
+                '}';
     }
 }

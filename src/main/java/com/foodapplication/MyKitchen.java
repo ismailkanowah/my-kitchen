@@ -1,9 +1,18 @@
 package com.foodapplication;
 
+import com.foodapplication.entity.Recipe;
+import com.foodapplication.enums.Taste;
+import com.foodapplication.enums.Type;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -12,12 +21,23 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MyKitchen extends Application {
 
     static TextField searchCriteria;
+    static TableView table;
+    static CheckBox sweetCheckbox, savouryChecbox, breakfastCheckbox, lunchCheckbox, dinnerCheckbox;
+    static String searchText;
+    static List<Taste> tasteList;
+    static List<Type> typeList;
+    static ObservableList<Recipe> recipeObservableList;
+
     @Override
     public void start(Stage primaryStage) throws IOException {
+
+        recipeObservableList = FXCollections.observableArrayList(Query.getRecipes(null, null, null));
 
         HBox headerHBox = new HBox(300.0);
         headerHBox.setAlignment(Pos.CENTER_LEFT);
@@ -31,6 +51,16 @@ public class MyKitchen extends Application {
         searchCriteria.setMinWidth(400.0);
         searchCriteria.setMinHeight(40.0);
         searchCriteria.setFocusTraversable(false);
+        searchCriteria.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent keyEvent) {
+                searchText = searchCriteria.getText() + keyEvent.getText();
+                if (searchCriteria.getText() == "") {
+                    searchText = null;
+                }
+                updateRecipeList(searchText);
+            }
+        });
 
         headerHBox.getChildren().add(0, programTitle);
         headerHBox.getChildren().add(1, searchCriteria);
@@ -39,9 +69,9 @@ public class MyKitchen extends Application {
         tasteTitle.setText("Select taste");
         tasteTitle.setFont(Font.font("Arial", 24.0));
 
-        CheckBox sweetCheckbox = new CheckBox("Sweet");
+        sweetCheckbox = new CheckBox("Sweet");
         sweetCheckbox.setFocusTraversable(false);
-        CheckBox savouryChecbox = new CheckBox("Savoury");
+        savouryChecbox = new CheckBox("Savoury");
         savouryChecbox.setFocusTraversable(false);
 
         HBox checkboxContainer = new HBox(50.0);
@@ -52,11 +82,11 @@ public class MyKitchen extends Application {
         mealTitle.setText("Select meal");
         mealTitle.setFont(Font.font("Arial", 24.0));
 
-        CheckBox breakfastCheckbox = new CheckBox("Breakfast");
+         breakfastCheckbox = new CheckBox("Breakfast");
         breakfastCheckbox.setFocusTraversable(false);
-        CheckBox lunchCheckbox = new CheckBox("Lunch");
+         lunchCheckbox = new CheckBox("Lunch");
         lunchCheckbox.setFocusTraversable(false);
-        CheckBox dinnerCheckbox = new CheckBox("Dinner");
+         dinnerCheckbox = new CheckBox("Dinner");
         dinnerCheckbox.setFocusTraversable(false);
 
         HBox mealCheckboxContainer = new HBox(50.0);
@@ -89,12 +119,22 @@ public class MyKitchen extends Application {
         recipeContainer.getChildren().add(0, recipeTitle);
         recipeContainer.getChildren().add(1, addRecipeButton);
 
-        TableView table = new TableView();
+        table = new TableView();
         table.setEditable(false);
-        TableColumn recipeTitleColumn = new TableColumn("Name");
+
+        TableColumn<Recipe, String> recipeTitleColumn = new TableColumn<>("Name");
+        recipeTitleColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        recipeTitleColumn.setResizable(false);
+        recipeTitleColumn.setSortable(false);
         recipeTitleColumn.setMinWidth(300.0);
-        TableColumn recipeDescriptionColumn = new TableColumn("Description");
-        recipeDescriptionColumn.setMinWidth(550.0);
+
+        TableColumn<Recipe, String> recipeDescriptionColumn = new TableColumn<>("Description");
+        recipeDescriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
+        recipeDescriptionColumn.setResizable(false);
+        recipeDescriptionColumn.setSortable(false);
+        recipeDescriptionColumn.setMinWidth(525.0);
+
+        table.setItems(recipeObservableList);
         table.getColumns().addAll(recipeTitleColumn, recipeDescriptionColumn);
 
         VBox recipeBox = new VBox(10.0);
@@ -114,8 +154,8 @@ public class MyKitchen extends Application {
         mainMenu.getChildren().add(pageBox);
 
         Scene scene = new Scene(mainMenu);
-        scene.setOnMousePressed(event -> {
-            if (!searchCriteria.equals(event.getSource())) {
+        scene.setOnMousePressed(mouseEvent -> {
+            if (!searchCriteria.equals(mouseEvent.getSource())) {
                 searchCriteria.getParent().requestFocus();
             }
         });
@@ -133,6 +173,29 @@ public class MyKitchen extends Application {
         });
         primaryStage.setResizable(false);
         primaryStage.show();
+    }
+
+    public static void updateRecipeList(String searchText) {
+        List<Taste> tastes = new ArrayList<>();
+        List<Type> types = new ArrayList<>();
+        if (sweetCheckbox.isSelected()) {
+            tastes.add(Taste.SWEET);
+        }
+        if (savouryChecbox.isSelected()) {
+            tastes.add(Taste.SAVOURY);
+        }
+        if (breakfastCheckbox.isSelected()) {
+            types.add(Type.BREAKFAST);
+        }
+        if (lunchCheckbox.isSelected()) {
+            types.add(Type.LUNCH);
+        }
+        if (dinnerCheckbox.isSelected()) {
+            types.add(Type.DINNER);
+        }
+
+        recipeObservableList = FXCollections.observableArrayList(Query.getRecipes(searchText.equalsIgnoreCase("") ? null : searchText, tastes.isEmpty() ? null : tastes, types.isEmpty() ? null : types));
+        table.setItems(recipeObservableList);
     }
 
 

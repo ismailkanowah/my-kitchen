@@ -4,7 +4,7 @@ module com.example.foodapplication {
     requires mysql.connector.java;
     requires java.sql;
 
-
+    opens com.foodapplication.entity;
     opens com.foodapplication to javafx.fxml;
     exports com.foodapplication;
 }

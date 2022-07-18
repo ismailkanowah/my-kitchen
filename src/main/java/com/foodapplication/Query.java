@@ -30,7 +30,7 @@ public class Query extends Database {
         }
     }
 
-    public List<Recipe> getRecipes(String searchText, List<Taste> tastes, List<Type> types) {
+    public static List<Recipe> getRecipes(String searchText, List<Taste> tastes, List<Type> types) {
         List<Recipe> recipeList = new ArrayList<>();
 
         String query = null;
@@ -38,7 +38,7 @@ public class Query extends Database {
         String typesValues = Arrays.stream(Taste.values()).map(Enum::name).collect(Collectors.joining(","));
 
         if (Objects.isNull(searchText) && Objects.isNull(tastes) && Objects.isNull(types)) {
-            query = "SELECT * FROM Booking";
+            query = "SELECT * FROM recipe";
         } else if (Objects.isNull(tastes) && Objects.isNull(types)) {
             query = "SELECT * FROM recipe where name LIKE '%" + searchText + "%'";
         } else if (Objects.isNull(tastes)) {
