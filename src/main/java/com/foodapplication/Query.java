@@ -42,14 +42,18 @@ public class Query extends Database {
         } else if (Objects.isNull(tastes) && Objects.isNull(types)) {
             query = "SELECT * FROM recipe where name LIKE '%" + searchText + "%'";
         } else if (Objects.isNull(tastes)) {
+            //pas suposer typesValues sa ?
+            //type bizin replace par values depi parameter :/
             query = "SELECT * FROM recipe where name LIKE '%" + searchText + "%' AND type IN (" + tastesValues + ")";
         } else if (Objects.isNull(types)) {
+            //pas suposer tastesValues sa ?
+            //type bizin replace par values depi parameter :/
             query = "SELECT * FROM recipe where name LIKE '%" + searchText + "%' AND type IN (" + typesValues + ")";
         } else if (Objects.isNull(searchText) && Objects.isNull(tastes)) {
             query = "SELECT * FROM recipe where type IN (" + typesValues + ")";
         } else if (Objects.isNull(searchText) && Objects.isNull(types)) {
             query = "SELECT * FROM recipe where type IN (" + tastesValues + ")";
-        }
+        } //else if nothing is null ?
 
         try {
             Statement statement = DBconnect.createStatement();
