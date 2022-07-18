@@ -12,11 +12,10 @@ public class Query extends Database {
 
 
     public void addIngredient(Ingredient ingredient) {
-        String SQL = "INSERT INTO ingredient (name,description) values (?,?)";
+        String SQL = "INSERT INTO ingredient (name) values (?)";
         try {
             PreparedStatement preparedStatement = DBconnect.prepareStatement(SQL);
             preparedStatement.setString(1, ingredient.getName());
-            preparedStatement.setString(2, ingredient.getDescription());
 
             preparedStatement.execute();
 

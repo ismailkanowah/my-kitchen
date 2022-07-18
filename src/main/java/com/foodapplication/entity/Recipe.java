@@ -1,5 +1,8 @@
 package com.foodapplication.entity;
 
+import com.foodapplication.enums.Taste;
+import com.foodapplication.enums.Type;
+
 public class Recipe {
 
     private Long id;
@@ -7,6 +10,16 @@ public class Recipe {
     private String name;
 
     private String description;
+
+    private Taste taste;
+
+    public Taste getTaste() {
+        return taste;
+    }
+
+    public void setTaste(Taste taste) {
+        this.taste = taste;
+    }
 
     private Type type;
 
@@ -34,7 +47,6 @@ public class Recipe {
         this.description = description;
     }
 
-
     public Type getType() {
         return type;
     }
@@ -43,16 +55,18 @@ public class Recipe {
         this.type = type;
     }
 
-    public Recipe(Long id, String name, String description, Type type) {
+    public Recipe(Long id, String name, String description, Taste taste, Type type) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.taste = taste;
         this.type = type;
     }
 
-    public Recipe(String name, String description, Type type) {
+    public Recipe(String name, String description, Taste taste, Type type) {
         this.name = name;
         this.description = description;
+        this.taste = taste;
         this.type = type;
     }
 }
