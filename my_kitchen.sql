@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 20, 2022 at 12:31 AM
+-- Generation Time: Jul 20, 2022 at 12:33 AM
 -- Server version: 10.5.9-MariaDB
 -- PHP Version: 8.1.6
 
@@ -39,7 +39,8 @@ CREATE TABLE `ingredient` (
 
 INSERT INTO `ingredient` (`id`, `name`, `description`) VALUES
 (1, 'egg', 'dizef'),
-(2, 'Milk', 'Dilai');
+(2, 'Milk', 'Dilai'),
+(3, 'Salt', 'Disel');
 
 -- --------------------------------------------------------
 
@@ -84,7 +85,8 @@ CREATE TABLE `recipe_ingredient` (
 --
 
 INSERT INTO `recipe_ingredient` (`id`, `recipeId`, `ingredientId`) VALUES
-(1, 5, 1);
+(1, 5, 1),
+(2, 5, 2);
 
 -- --------------------------------------------------------
 
@@ -149,7 +151,7 @@ ALTER TABLE `step`
 -- AUTO_INCREMENT for table `ingredient`
 --
 ALTER TABLE `ingredient`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `recipe`
@@ -161,7 +163,7 @@ ALTER TABLE `recipe`
 -- AUTO_INCREMENT for table `recipe_ingredient`
 --
 ALTER TABLE `recipe_ingredient`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `step`
