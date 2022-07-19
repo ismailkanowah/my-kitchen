@@ -2,6 +2,7 @@ package com.foodapplication;
 
 import com.foodapplication.entity.Ingredient;
 import com.foodapplication.entity.Recipe;
+import com.foodapplication.entity.Step;
 import com.foodapplication.enums.Taste;
 import com.foodapplication.enums.Type;
 
@@ -66,6 +67,40 @@ public class Query extends Database {
             System.out.println("Error" + ex.getMessage());
         }
         return recipeList;
+
+    }
+
+    public static List<Step> getRecipeSteps(Integer recipeId) {
+        String query = "SELECT * FROM step WHERE recipeId=" + recipeId + ";";
+        List<Step> stepList = new ArrayList<>();
+        try {
+            Statement statement = DBconnect.createStatement();
+            ResultSet rs = statement.executeQuery(query);
+
+            while (rs.next()) {
+                stepList.add(new Step(Long.parseLong(rs.getString("id")), Long.parseLong(rs.getString("recipeId")), Integer.parseInt(rs.getString("stepOrder")), rs.getString("content")));
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error" + ex.getMessage());
+        }
+        return stepList;
+
+    }
+
+    public static List<Ingredient> getIngredient(Integer recipeId) {
+        String query = "SELECT * FROM ingredient WHERE ingredientId IN (SELECT * FROM recipe_ingredient WHERE recipeId=" + recipeId + ");";
+        List<Ingredient> ingredientList = new ArrayList<>();
+        try {
+            Statement statement = DBconnect.createStatement();
+            ResultSet rs = statement.executeQuery(query);
+
+            while (rs.next()) {
+                ingredientList.add(new Ingredient(Long.parseLong(rs.getString("id")), rs.getString("name")));
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error" + ex.getMessage());
+        }
+        return ingredientList;
 
     }
 }
