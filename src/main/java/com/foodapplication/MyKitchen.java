@@ -8,7 +8,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -206,25 +205,26 @@ public class MyKitchen extends Application {
     }
 
     public static void updateRecipeList(String searchText) {
-        List<Taste> tastes = new ArrayList<>();
-        List<Type> types = new ArrayList<>();
+        List<Integer> tastes = new ArrayList<>();
+        List<Integer> types = new ArrayList<>();
+
         if (sweetCheckbox.isSelected()) {
-            tastes.add(Taste.SWEET);
+            tastes.add(Taste.SWEET.value);
         }
         if (savouryChecbox.isSelected()) {
-            tastes.add(Taste.SAVOURY);
+            tastes.add(Taste.SAVOURY.value);
         }
         if (breakfastCheckbox.isSelected()) {
-            types.add(Type.BREAKFAST);
+            types.add(Type.BREAKFAST.value);
         }
         if (lunchCheckbox.isSelected()) {
-            types.add(Type.LUNCH);
+            types.add(Type.LUNCH.value);
         }
         if (dinnerCheckbox.isSelected()) {
-            types.add(Type.DINNER);
+            types.add(Type.DINNER.value);
         }
 
-        recipeObservableList = FXCollections.observableArrayList(Query.getRecipes( searchText,  tastes,  types));
+        recipeObservableList = FXCollections.observableArrayList(Query.getRecipes(searchText, tastes, types));
         table.setItems(recipeObservableList);
     }
 
