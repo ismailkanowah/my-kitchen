@@ -4,6 +4,8 @@ import com.foodapplication.entity.Recipe;
 import com.foodapplication.enums.Taste;
 import com.foodapplication.enums.Type;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -30,8 +32,6 @@ public class MyKitchen extends Application {
     static TableView table;
     static CheckBox sweetCheckbox, savouryChecbox, breakfastCheckbox, lunchCheckbox, dinnerCheckbox;
     static String searchText;
-    static List<Taste> tasteList;
-    static List<Type> typeList;
     static ObservableList<Recipe> recipeObservableList;
 
     @Override
@@ -71,8 +71,20 @@ public class MyKitchen extends Application {
 
         sweetCheckbox = new CheckBox("Sweet");
         sweetCheckbox.setFocusTraversable(false);
+        sweetCheckbox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                updateRecipeList(searchText);
+            }
+        });
         savouryChecbox = new CheckBox("Savoury");
         savouryChecbox.setFocusTraversable(false);
+        savouryChecbox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                updateRecipeList(searchText);
+            }
+        });
 
         HBox checkboxContainer = new HBox(50.0);
         checkboxContainer.getChildren().add(0, sweetCheckbox);
@@ -82,12 +94,30 @@ public class MyKitchen extends Application {
         mealTitle.setText("Select meal");
         mealTitle.setFont(Font.font("Arial", 24.0));
 
-         breakfastCheckbox = new CheckBox("Breakfast");
+        breakfastCheckbox = new CheckBox("Breakfast");
         breakfastCheckbox.setFocusTraversable(false);
-         lunchCheckbox = new CheckBox("Lunch");
+        breakfastCheckbox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                updateRecipeList(searchText);
+            }
+        });
+        lunchCheckbox = new CheckBox("Lunch");
         lunchCheckbox.setFocusTraversable(false);
-         dinnerCheckbox = new CheckBox("Dinner");
+        lunchCheckbox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                updateRecipeList(searchText);
+            }
+        });
+        dinnerCheckbox = new CheckBox("Dinner");
         dinnerCheckbox.setFocusTraversable(false);
+        dinnerCheckbox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                updateRecipeList(searchText);
+            }
+        });
 
         HBox mealCheckboxContainer = new HBox(50.0);
         mealCheckboxContainer.getChildren().add(0, breakfastCheckbox);
@@ -194,7 +224,7 @@ public class MyKitchen extends Application {
             types.add(Type.DINNER);
         }
 
-        recipeObservableList = FXCollections.observableArrayList(Query.getRecipes(searchText.equalsIgnoreCase("") ? null : searchText, tastes.isEmpty() ? null : tastes, types.isEmpty() ? null : types));
+        recipeObservableList = FXCollections.observableArrayList(Query.getRecipes( searchText,  tastes,  types));
         table.setItems(recipeObservableList);
     }
 
