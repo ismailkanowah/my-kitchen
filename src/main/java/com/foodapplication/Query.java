@@ -42,13 +42,15 @@ public class Query extends Database {
         } else if (Objects.isNull(searchText) && tastes.isEmpty()) {
             query = "SELECT * FROM recipe where type IN (" + typesValues + ")";
         } else if (Objects.isNull(searchText) && types.isEmpty()) {
-            query = "SELECT * FROM recipe where type IN (" + tastesValues + ")";
+            query = "SELECT * FROM recipe where taste IN (" + tastesValues + ")";
         } else if (tastes.isEmpty() && types.isEmpty()) {
             query = "SELECT * FROM recipe where name LIKE '%" + searchText + "%'";
         } else if (tastes.isEmpty()) {
             query = "SELECT * FROM recipe where name LIKE '%" + searchText + "%' AND type IN (" + typesValues + ")";
         } else if (types.isEmpty()) {
             query = "SELECT * FROM recipe where name LIKE '%" + searchText + "%' AND taste IN (" + tastesValues + ")";
+        } else if (Objects.isNull(searchText)) {
+            query = "SELECT * FROM recipe where type IN (" + typesValues + ") AND taste IN (" + tastesValues + ")";
         } else {
             query = "SELECT * FROM recipe where name LIKE '%" + searchText + "%' AND type IN (" + typesValues + ") AND taste IN (" + tastesValues + ")";
         }
@@ -70,7 +72,7 @@ public class Query extends Database {
 
     }
 
-    public static List<Step> getRecipeSteps(Integer recipeId) {
+    public static List<Step> getRecipeSteps(Long recipeId) {
         String query = "SELECT * FROM step WHERE recipeId=" + recipeId + ";";
         List<Step> stepList = new ArrayList<>();
         try {
@@ -87,7 +89,7 @@ public class Query extends Database {
 
     }
 
-    public static List<Ingredient> getIngredient(Integer recipeId) {
+    public static List<Ingredient> getIngredient(Long recipeId) {
         String query = "SELECT * FROM ingredient WHERE id IN (SELECT ingredientId FROM recipe_ingredient WHERE recipeId=" + recipeId + ");";
         List<Ingredient> ingredientList = new ArrayList<>();
         try {
