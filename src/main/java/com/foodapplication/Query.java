@@ -7,10 +7,7 @@ import com.foodapplication.enums.Taste;
 import com.foodapplication.enums.Type;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Query extends Database {
@@ -85,6 +82,9 @@ public class Query extends Database {
         } catch (SQLException ex) {
             System.out.println("Error" + ex.getMessage());
         }
+
+        stepList.sort(Comparator.comparing(Step::getStepOrder));
+
         return stepList;
 
     }
