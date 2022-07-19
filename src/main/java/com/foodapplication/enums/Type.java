@@ -6,9 +6,9 @@ public enum Type {
     DINNER(2);
 
     public final int value;
-    public static String getEnumByValue(int value) {
+    public static Type getEnumByValue(int value) {
         for (Type type: Type.values()) {
-            if (type.value == value) return type.name();
+            if (type.value == value) return type;
         }
         return null;
     }

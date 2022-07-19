@@ -6,9 +6,9 @@ public enum Taste {
 
     public final int value;
 
-    public static String getEnumByValue(int value) {
+    public static Taste getEnumByValue(int value) {
         for (Taste taste: Taste.values()) {
-            if (taste.value == value) return taste.name();
+            if (taste.value == value) return taste;
         }
         return null;
     }

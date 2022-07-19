@@ -38,16 +38,16 @@ public class Query extends Database {
 
         if (Objects.isNull(searchText) && tastes.isEmpty() && types.isEmpty()) {
             query = "SELECT * FROM recipe";
+        } else if (Objects.isNull(searchText) && tastes.isEmpty()) {
+            query = "SELECT * FROM recipe where type IN (" + typesValues + ")";
+        } else if (Objects.isNull(searchText) && types.isEmpty()) {
+            query = "SELECT * FROM recipe where type IN (" + tastesValues + ")";
         } else if (tastes.isEmpty() && types.isEmpty()) {
             query = "SELECT * FROM recipe where name LIKE '%" + searchText + "%'";
         } else if (tastes.isEmpty()) {
             query = "SELECT * FROM recipe where name LIKE '%" + searchText + "%' AND type IN (" + typesValues + ")";
         } else if (types.isEmpty()) {
             query = "SELECT * FROM recipe where name LIKE '%" + searchText + "%' AND taste IN (" + tastesValues + ")";
-        } else if (Objects.isNull(searchText) && tastes.isEmpty()) {
-            query = "SELECT * FROM recipe where type IN (" + typesValues + ")";
-        } else if (Objects.isNull(searchText) && types.isEmpty()) {
-            query = "SELECT * FROM recipe where type IN (" + tastesValues + ")";
         } else {
             query = "SELECT * FROM recipe where name LIKE '%" + searchText + "%' AND type IN (" + typesValues + ") AND taste IN (" + tastesValues + ")";
         }
@@ -58,7 +58,9 @@ public class Query extends Database {
 
             while (rs.next()) {
                 recipeList.add(new Recipe(Long.parseLong(rs.getString("id")), rs.getString("name"), rs.getString("description"),
-                        Taste.valueOf(rs.getString("taste")), Type.valueOf(rs.getString("type"))));
+                        Taste.getEnumByValue(Integer.valueOf(rs.getString("taste"))),
+                        Type.getEnumByValue(Integer.valueOf(rs.getString("type"))))
+                );
             }
         } catch (SQLException ex) {
             System.out.println("Error" + ex.getMessage());
