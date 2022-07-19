@@ -32,21 +32,23 @@ public class Query extends Database {
     public static List<Recipe> getRecipes(String searchText, List<Taste> tastes, List<Type> types) {
         List<Recipe> recipeList = new ArrayList<>();
 
-        String query = null;
-        String tastesValues = tastes.stream().map(Enum::name).collect(Collectors.joining(","));
-        String typesValues = types.stream().map(Enum::name).collect(Collectors.joining(","));
+        String query = null, tastesValues = null, typesValues = null;
+        if (!tastes.isEmpty()) tastesValues = tastes.stream().map(Enum::name).collect(Collectors.joining(","));
+        if (!types.isEmpty()) typesValues = types.stream().map(Enum::name).collect(Collectors.joining(","));
 
-        if (Objects.isNull(searchText) && Objects.isNull(tastes) && Objects.isNull(types)) {
+        System.out.println(tastesValues);
+
+        if (Objects.isNull(searchText) && tastes.isEmpty() && types.isEmpty()) {
             query = "SELECT * FROM recipe";
-        } else if (Objects.isNull(tastes) && Objects.isNull(types)) {
+        } else if (tastes.isEmpty() && types.isEmpty()) {
             query = "SELECT * FROM recipe where name LIKE '%" + searchText + "%'";
-        } else if (Objects.isNull(tastes)) {
+        } else if (tastes.isEmpty()) {
             query = "SELECT * FROM recipe where name LIKE '%" + searchText + "%' AND type IN (" + typesValues + ")";
-        } else if (Objects.isNull(types)) {
+        } else if (types.isEmpty()) {
             query = "SELECT * FROM recipe where name LIKE '%" + searchText + "%' AND taste IN (" + tastesValues + ")";
-        } else if (Objects.isNull(searchText) && Objects.isNull(tastes)) {
+        } else if (Objects.isNull(searchText) && tastes.isEmpty()) {
             query = "SELECT * FROM recipe where type IN (" + typesValues + ")";
-        } else if (Objects.isNull(searchText) && Objects.isNull(types)) {
+        } else if (Objects.isNull(searchText) && types.isEmpty()) {
             query = "SELECT * FROM recipe where type IN (" + tastesValues + ")";
         } else {
             query = "SELECT * FROM recipe where name LIKE '%" + searchText + "%' AND type IN (" + typesValues + ") AND taste IN (" + tastesValues + ")";

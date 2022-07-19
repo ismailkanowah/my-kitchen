@@ -37,7 +37,7 @@ public class MyKitchen extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
 
-        recipeObservableList = FXCollections.observableArrayList(Query.getRecipes(null, null, null));
+        recipeObservableList = FXCollections.observableArrayList(Query.getRecipes(null, new ArrayList(), new ArrayList()));
 
         HBox headerHBox = new HBox(300.0);
         headerHBox.setAlignment(Pos.CENTER_LEFT);
