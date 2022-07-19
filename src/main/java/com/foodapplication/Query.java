@@ -88,7 +88,7 @@ public class Query extends Database {
     }
 
     public static List<Ingredient> getIngredient(Integer recipeId) {
-        String query = "SELECT * FROM ingredient WHERE ingredientId IN (SELECT * FROM recipe_ingredient WHERE recipeId=" + recipeId + ");";
+        String query = "SELECT * FROM ingredient WHERE id IN (SELECT ingredientId FROM recipe_ingredient WHERE recipeId=" + recipeId + ");";
         List<Ingredient> ingredientList = new ArrayList<>();
         try {
             Statement statement = DBconnect.createStatement();
