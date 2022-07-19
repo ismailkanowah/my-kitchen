@@ -16,7 +16,6 @@ public class Query extends Database {
 
     private static final Connection DBconnect = getConnection();
 
-
     public void addIngredient(Ingredient ingredient) {
         String SQL = "INSERT INTO ingredient (name) values (?)";
         try {
@@ -34,26 +33,24 @@ public class Query extends Database {
         List<Recipe> recipeList = new ArrayList<>();
 
         String query = null;
-        String tastesValues = Arrays.stream(Type.values()).map(Enum::name).collect(Collectors.joining(","));
-        String typesValues = Arrays.stream(Taste.values()).map(Enum::name).collect(Collectors.joining(","));
+        String tastesValues = tastes.stream().map(Enum::name).collect(Collectors.joining(","));
+        String typesValues = types.stream().map(Enum::name).collect(Collectors.joining(","));
 
         if (Objects.isNull(searchText) && Objects.isNull(tastes) && Objects.isNull(types)) {
             query = "SELECT * FROM recipe";
         } else if (Objects.isNull(tastes) && Objects.isNull(types)) {
             query = "SELECT * FROM recipe where name LIKE '%" + searchText + "%'";
         } else if (Objects.isNull(tastes)) {
-            //TODO pas suposer typesValues sa ?
-            //TODO type bizin replace par values depi parameter :/
-            query = "SELECT * FROM recipe where name LIKE '%" + searchText + "%' AND type IN (" + tastesValues + ")";
-        } else if (Objects.isNull(types)) {
-            //TODO pas suposer tastesValues sa ?
-            //TODO type bizin replace par values depi parameter :/
             query = "SELECT * FROM recipe where name LIKE '%" + searchText + "%' AND type IN (" + typesValues + ")";
+        } else if (Objects.isNull(types)) {
+            query = "SELECT * FROM recipe where name LIKE '%" + searchText + "%' AND taste IN (" + tastesValues + ")";
         } else if (Objects.isNull(searchText) && Objects.isNull(tastes)) {
             query = "SELECT * FROM recipe where type IN (" + typesValues + ")";
         } else if (Objects.isNull(searchText) && Objects.isNull(types)) {
             query = "SELECT * FROM recipe where type IN (" + tastesValues + ")";
-        } //TODO else if nothing is null ?
+        } else {
+            query = "SELECT * FROM recipe where name LIKE '%" + searchText + "%' AND type IN (" + typesValues + ") AND taste IN (" + tastesValues + ")";
+        }
 
         try {
             Statement statement = DBconnect.createStatement();
@@ -61,7 +58,7 @@ public class Query extends Database {
 
             while (rs.next()) {
                 recipeList.add(new Recipe(Long.parseLong(rs.getString("id")), rs.getString("name"), rs.getString("description"),
-                        Taste.valueOf(rs.getString("taste")), Type.valueOf(rs.getString("type"))));
+                  Taste.valueOf(rs.getString("taste")), Type.valueOf(rs.getString("type"))));
             }
         } catch (SQLException ex) {
             System.out.println("Error" + ex.getMessage());
