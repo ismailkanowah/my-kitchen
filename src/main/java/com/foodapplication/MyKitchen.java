@@ -4,6 +4,7 @@ import com.foodapplication.entity.Recipe;
 import com.foodapplication.enums.Taste;
 import com.foodapplication.enums.Type;
 import javafx.application.Application;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -14,6 +15,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -155,7 +157,7 @@ public class MyKitchen extends Application {
         recipeTitleColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         recipeTitleColumn.setResizable(false);
         recipeTitleColumn.setSortable(false);
-        recipeTitleColumn.setMinWidth(300.0);
+        recipeTitleColumn.setMinWidth(150.0);
 
         TableColumn<Recipe, String> recipeDescriptionColumn = new TableColumn<>("Description");
         recipeDescriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
@@ -163,8 +165,33 @@ public class MyKitchen extends Application {
         recipeDescriptionColumn.setSortable(false);
         recipeDescriptionColumn.setMinWidth(525.0);
 
+        TableColumn<Recipe, String> tasteColumn = new TableColumn<>("Taste");
+        tasteColumn.setCellValueFactory(value -> new SimpleStringProperty(Taste.getEnumLabel(value)));
+        tasteColumn.setResizable(false);
+        tasteColumn.setSortable(false);
+        tasteColumn.setMinWidth(50.0);
+
+        TableColumn<Recipe, String> typeColumn = new TableColumn<>("Type");
+        typeColumn.setCellValueFactory(value -> new SimpleStringProperty(Type.getEnumLabel(value)));
+        typeColumn.setResizable(false);
+        typeColumn.setSortable(false);
+        typeColumn.setMinWidth(50.0);
+
         table.setItems(recipeObservableList);
-        table.getColumns().addAll(recipeTitleColumn, recipeDescriptionColumn);
+        table.getColumns().addAll(recipeTitleColumn, recipeDescriptionColumn, tasteColumn, typeColumn);
+        table.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (event.isPrimaryButtonDown() && event.getClickCount() == 2) {
+                    Recipe selectedRecipe = (Recipe) table.getSelectionModel().getSelectedItem();
+                    try {
+                        ViewRecipe.viewRecipe(selectedRecipe);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        });
 
         VBox recipeBox = new VBox(10.0);
         recipeBox.setAlignment(Pos.CENTER_LEFT);
