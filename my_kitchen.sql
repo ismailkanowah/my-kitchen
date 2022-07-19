@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 19, 2022 at 11:00 PM
+-- Generation Time: Jul 20, 2022 at 12:31 AM
 -- Server version: 10.5.9-MariaDB
 -- PHP Version: 8.1.6
 
@@ -32,6 +32,14 @@ CREATE TABLE `ingredient` (
   `name` text NOT NULL,
   `description` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `ingredient`
+--
+
+INSERT INTO `ingredient` (`id`, `name`, `description`) VALUES
+(1, 'egg', 'dizef'),
+(2, 'Milk', 'Dilai');
 
 -- --------------------------------------------------------
 
@@ -71,6 +79,13 @@ CREATE TABLE `recipe_ingredient` (
   `ingredientId` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `recipe_ingredient`
+--
+
+INSERT INTO `recipe_ingredient` (`id`, `recipeId`, `ingredientId`) VALUES
+(1, 5, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -83,6 +98,20 @@ CREATE TABLE `step` (
   `stepOrder` int(11) NOT NULL,
   `content` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `step`
+--
+
+INSERT INTO `step` (`id`, `recipeId`, `stepOrder`, `content`) VALUES
+(1, 5, 1, 'Search for 3 big eggs'),
+(2, 5, 2, 'Break the 3 big eggs'),
+(3, 5, 3, 'Mix with a pinch of salt'),
+(4, 5, 4, 'Pour a tsp of oil in a pan and heat'),
+(5, 5, 5, 'Pour the mixed egg into the pan'),
+(6, 5, 6, 'Turn egg around when no more liquid'),
+(7, 5, 7, 'Remove egg from pan after 30 seconds and put on a plate'),
+(8, 5, 8, 'Eat and enjoy ! ☺');
 
 --
 -- Indexes for dumped tables
@@ -120,7 +149,7 @@ ALTER TABLE `step`
 -- AUTO_INCREMENT for table `ingredient`
 --
 ALTER TABLE `ingredient`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `recipe`
@@ -132,13 +161,13 @@ ALTER TABLE `recipe`
 -- AUTO_INCREMENT for table `recipe_ingredient`
 --
 ALTER TABLE `recipe_ingredient`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `step`
 --
 ALTER TABLE `step`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
