@@ -29,14 +29,12 @@ public class Query extends Database {
         }
     }
 
-    public static List<Recipe> getRecipes(String searchText, List<Taste> tastes, List<Type> types) {
+    public static List<Recipe> getRecipes(String searchText, List<Integer> tastes, List<Integer> types) {
         List<Recipe> recipeList = new ArrayList<>();
 
         String query = null, tastesValues = null, typesValues = null;
-        if (!tastes.isEmpty()) tastesValues = tastes.stream().map(Enum::name).collect(Collectors.joining(","));
-        if (!types.isEmpty()) typesValues = types.stream().map(Enum::name).collect(Collectors.joining(","));
-
-        System.out.println(tastesValues);
+        if (!tastes.isEmpty()) tastesValues = tastes.stream().map(Object::toString).collect(Collectors.joining(","));
+        if (!types.isEmpty()) typesValues = types.stream().map(Object::toString).collect(Collectors.joining(","));
 
         if (Objects.isNull(searchText) && tastes.isEmpty() && types.isEmpty()) {
             query = "SELECT * FROM recipe";
@@ -60,7 +58,7 @@ public class Query extends Database {
 
             while (rs.next()) {
                 recipeList.add(new Recipe(Long.parseLong(rs.getString("id")), rs.getString("name"), rs.getString("description"),
-                  Taste.valueOf(rs.getString("taste")), Type.valueOf(rs.getString("type"))));
+                        Taste.valueOf(rs.getString("taste")), Type.valueOf(rs.getString("type"))));
             }
         } catch (SQLException ex) {
             System.out.println("Error" + ex.getMessage());
