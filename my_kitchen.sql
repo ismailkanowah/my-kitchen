@@ -38,7 +38,7 @@ CREATE TABLE `ingredient` (
 --
 
 INSERT INTO `ingredient` (`id`, `name`, `description`) VALUES
-(1, 'egg', 'dizef'),
+(1, 'Egg', 'dizef'),
 (2, 'Milk', 'Dilai'),
 (3, 'Salt', 'Disel');
 

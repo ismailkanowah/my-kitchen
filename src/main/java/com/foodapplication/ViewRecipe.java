@@ -3,20 +3,16 @@ package com.foodapplication;
 import com.foodapplication.entity.Ingredient;
 import com.foodapplication.entity.Recipe;
 import com.foodapplication.entity.Step;
-import com.foodapplication.enums.Taste;
-import com.foodapplication.enums.Type;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -25,6 +21,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Optional;
 
 public class ViewRecipe {
 
@@ -56,6 +54,13 @@ public class ViewRecipe {
         recipeTitle.setText(recipe.getName());
         recipeTitle.setFont(Font.font("Arial", 28.0));
 
+        Button deleteButton = new Button("Delete");
+        deleteButton.setFocusTraversable(false);
+        deleteButton.setMinWidth(100);
+        deleteButton.setMinHeight(40);
+        deleteButton.setAlignment(Pos.CENTER);
+        deleteButton.setOnAction(action -> deleteRecipe(recipe.getId(), recipe.getName()));
+
         Button backButton = new Button("Back");
         backButton.setFocusTraversable(false);
         backButton.setMinWidth(100);
@@ -63,11 +68,15 @@ public class ViewRecipe {
         backButton.setAlignment(Pos.CENTER);
         backButton.setOnAction(action -> viewRecipeStage.close());
 
-        HBox titleBox = new HBox(350.0);
+        HBox buttonBox = new HBox(20.0);
+        buttonBox.getChildren().add(0, deleteButton);
+        buttonBox.getChildren().add(1, backButton);
+
+        HBox titleBox = new HBox(300.0);
         titleBox.setAlignment(Pos.CENTER_LEFT);
         titleBox.getChildren().add(0, programTitle);
         titleBox.getChildren().add(1, recipeTitle);
-        titleBox.getChildren().add(2, backButton);
+        titleBox.getChildren().add(2, buttonBox);
 
         ingredientsTable = new TableView();
         ingredientsTable.setEditable(false);
@@ -82,6 +91,8 @@ public class ViewRecipe {
         ingredientColumn.setSortable(false);
         ingredientColumn.setMinWidth(380.0);
         ingredientColumn.setMaxWidth(380.0);
+
+        ingredientData.sort(Comparator.comparing(Ingredient::getName));
 
         ingredientsTable.setItems(ingredientData);
         ingredientsTable.getColumns().addAll(ingredientColumn);
@@ -132,6 +143,22 @@ public class ViewRecipe {
         viewRecipeStage.showAndWait();
 
 
+    }
+
+    private static void deleteRecipe(Long recipeId, String recipeName) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Delete confirmation");
+        alert.setHeaderText("Deleting recipe " + recipeName);
+        alert.setContentText("Are you ok with this?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            Query.deleteRecipe(recipeId);
+            MyKitchen.updateRecipeList(MyKitchen.searchText);
+            viewRecipeStage.close();
+        } else {
+            alert.close();
+        }
 
     }
 

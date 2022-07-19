@@ -14,6 +14,10 @@ public class Query extends Database {
 
     private static final Connection DBconnect = getConnection();
 
+    public static void deleteRecipe(Long recipeId) {
+        //TODO delete steps, recipe_ingredient and recipe
+    }
+
     public void addIngredient(Ingredient ingredient) {
         String SQL = "INSERT INTO ingredient (name) values (?)";
         try {
