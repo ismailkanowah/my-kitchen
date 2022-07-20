@@ -62,8 +62,8 @@ public class Query extends Database {
 
             while (rs.next()) {
                 recipeList.add(new Recipe(Long.parseLong(rs.getString("id")), rs.getString("name"), rs.getString("description"),
-                        Taste.getEnumByValue(Integer.valueOf(rs.getString("taste"))),
-                        Type.getEnumByValue(Integer.valueOf(rs.getString("type"))))
+                  Taste.getEnumByValue(Integer.valueOf(rs.getString("taste"))),
+                  Type.getEnumByValue(Integer.valueOf(rs.getString("type"))))
                 );
             }
         } catch (SQLException ex) {
@@ -107,6 +107,23 @@ public class Query extends Database {
             System.out.println("Error" + ex.getMessage());
         }
         return ingredientList;
+
+    }
+
+    public static void removeRecipe(Long recipeId) {
+        String queryStep = "DELETE FROM step WHERE recipeId=" + recipeId + ";";
+        String queryIngredient = "DELETE FROM recipe_ingredient WHERE recipeId=" + recipeId + ";";
+        String queryRecipe= "DELETE FROM recipe WHERE id=" + recipeId + ";";
+
+        try {
+            Statement statement = DBconnect.createStatement();
+            statement.executeQuery(queryStep);
+            statement.executeQuery(queryIngredient);
+            statement.executeQuery(queryRecipe);
+
+        } catch (SQLException ex) {
+            System.out.println("Error" + ex.getMessage());
+        }
 
     }
 }
