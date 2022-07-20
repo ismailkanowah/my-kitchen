@@ -140,7 +140,7 @@ public class Query extends Database {
 
     }
 
-    public static void addRecipe(Recipe recipe, List<Long> ingredientsList) {
+    public static void addRecipe(Recipe recipe, List<Long> ingredientsList, List<Step> stepList) {
         String addRecipeQuery = "INSERT INTO recipe (name,description,taste,type) VALUES (?,?,?,?)";
         int recipeId = 0;
         try {
@@ -158,7 +158,8 @@ public class Query extends Database {
         } catch (SQLException ex) {
             System.out.println("SQL error: " + ex.getMessage());
         }
-        addIngredientsRecipe(recipeId,ingredientsList);
+        addIngredientsRecipe(recipeId, ingredientsList);
+        addStepsRecipe(recipeId, stepList);
     }
 
     public static void addIngredientsRecipe(Integer recipeId, List<Long> ingredientsList) {
@@ -175,4 +176,21 @@ public class Query extends Database {
             }
         });
     }
+
+    public static void addStepsRecipe(Integer recipeId, List<Step> stepsList) {
+        String addIngredientsRecipeQuery = "INSERT INTO step (recipeId,stepOrder,content) VALUES (?,?,?);";
+        stepsList.forEach((i) -> {
+            try {
+                PreparedStatement preparedStatement = DBconnect.prepareStatement(addIngredientsRecipeQuery);
+                preparedStatement.setString(1, recipeId.toString());
+                preparedStatement.setString(2, i.getStepOrder().toString());
+                preparedStatement.setString(3, i.getContent());
+                preparedStatement.executeUpdate();
+
+            } catch (SQLException ex) {
+                System.out.println("SQL error: " + ex.getMessage());
+            }
+        });
+    }
+
 }
