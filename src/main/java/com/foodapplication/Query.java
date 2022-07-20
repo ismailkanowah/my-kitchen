@@ -89,6 +89,23 @@ public class Query extends Database {
 
     }
 
+    public static List<Ingredient> getAllIngredient() {
+        String query = "SELECT * FROM ingredient;";
+        List<Ingredient> ingredientList = new ArrayList<>();
+        try {
+            Statement statement = DBconnect.createStatement();
+            ResultSet rs = statement.executeQuery(query);
+
+            while (rs.next()) {
+                ingredientList.add(new Ingredient(Long.parseLong(rs.getString("id")), rs.getString("name")));
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error" + ex.getMessage());
+        }
+        return ingredientList;
+
+    }
+
     public static List<Ingredient> getIngredient(Long recipeId) {
         String query = "SELECT * FROM ingredient WHERE id IN (SELECT ingredientId FROM recipe_ingredient WHERE recipeId=" + recipeId + ");";
         List<Ingredient> ingredientList = new ArrayList<>();
@@ -109,7 +126,7 @@ public class Query extends Database {
     public static void removeRecipe(Long recipeId) {
         String queryStep = "DELETE FROM step WHERE recipeId=" + recipeId + ";";
         String queryIngredient = "DELETE FROM recipe_ingredient WHERE recipeId=" + recipeId + ";";
-        String queryRecipe= "DELETE FROM recipe WHERE id=" + recipeId + ";";
+        String queryRecipe = "DELETE FROM recipe WHERE id=" + recipeId + ";";
 
         try {
             Statement statement = DBconnect.createStatement();
@@ -121,5 +138,41 @@ public class Query extends Database {
             System.out.println("Error" + ex.getMessage());
         }
 
+    }
+
+    public static void addRecipe(Recipe recipe, List<Long> ingredientsList) {
+        String addRecipeQuery = "INSERT INTO recipe (name,description,taste,type) VALUES (?,?,?,?)";
+        int recipeId = 0;
+        try {
+            PreparedStatement preparedStatement = DBconnect.prepareStatement(addRecipeQuery);
+            preparedStatement.setString(1, recipe.getName());
+            preparedStatement.setString(2, recipe.getDescription());
+            preparedStatement.setString(3, String.valueOf(recipe.getTaste().value));
+            preparedStatement.setString(4, String.valueOf(recipe.getType().value));
+            preparedStatement.executeUpdate();
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            if (rs.next()) {
+                recipeId = rs.getInt(1);
+            }
+
+        } catch (SQLException ex) {
+            System.out.println("SQL error: " + ex.getMessage());
+        }
+        addIngredientsRecipe(recipeId,ingredientsList);
+    }
+
+    public static void addIngredientsRecipe(Integer recipeId, List<Long> ingredientsList) {
+        String addIngredientsRecipeQuery = "INSERT INTO recipe_ingredient (recipeId,ingredientId) VALUES (?,?);";
+        ingredientsList.forEach((i) -> {
+            try {
+                PreparedStatement preparedStatement = DBconnect.prepareStatement(addIngredientsRecipeQuery);
+                preparedStatement.setString(1, recipeId.toString());
+                preparedStatement.setString(2, i.toString());
+                preparedStatement.executeUpdate();
+
+            } catch (SQLException ex) {
+                System.out.println("SQL error: " + ex.getMessage());
+            }
+        });
     }
 }
