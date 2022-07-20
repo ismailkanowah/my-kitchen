@@ -145,6 +145,13 @@ public class MyKitchen extends Application {
         addRecipeButton.setMinWidth(100);
         addRecipeButton.setMinHeight(40);
         addRecipeButton.setAlignment(Pos.CENTER);
+        addRecipeButton.setOnAction(action -> {
+            try {
+                AddRecipe.addRecipe();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         HBox recipeContainer = new HBox(700.0);
         recipeContainer.getChildren().add(0, recipeTitle);

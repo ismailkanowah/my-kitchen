@@ -92,8 +92,9 @@ public class ViewRecipe {
         ingredientColumn.setMinWidth(380.0);
         ingredientColumn.setMaxWidth(380.0);
 
-        ingredientData.sort(Comparator.comparing(Ingredient::getName));
-
+        if (ingredientData != null && !ingredientData.isEmpty()) {
+            ingredientData.sort(Comparator.comparing(Ingredient::getName));
+        }
         ingredientsTable.setItems(ingredientData);
         ingredientsTable.getColumns().addAll(ingredientColumn);
 
