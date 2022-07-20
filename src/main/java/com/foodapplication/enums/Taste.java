@@ -22,6 +22,15 @@ public enum Taste {
         return null;
     }
 
+    public static Taste getEnumByValue(String value) {
+        if (value.equalsIgnoreCase("sweet")) {
+            return SWEET;
+        } else if (value.equalsIgnoreCase("savoury")) {
+            return SAVOURY;
+        }
+        return null;
+    }
+
     private Taste(int value) {
         this.value = value;
     }

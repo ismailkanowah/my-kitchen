@@ -1,7 +1,10 @@
 package com.foodapplication;
 
 import com.foodapplication.entity.Ingredient;
+import com.foodapplication.entity.Recipe;
 import com.foodapplication.entity.Step;
+import com.foodapplication.enums.Taste;
+import com.foodapplication.enums.Type;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
@@ -17,12 +20,16 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class AddRecipe {
 
     static Stage addRecipeStage;
     static TableView ingredientsTable, stepsTable;
     static ToggleGroup tasteGroup, typeGroup;
+    static TextField nameField, descriptionField;
 
     static RadioButton sweetRadio, savouryRadio, breakfastRadio, lunchRadio, dinnerRadio;
     static ObservableList<Ingredient> ingredientData;
@@ -31,7 +38,7 @@ public class AddRecipe {
 
     public static void addRecipe() throws Exception {
 
-        ingredientData = FXCollections.observableArrayList(Query.);
+        ingredientData = FXCollections.observableArrayList(Query.getAllIngredient());
         stepData = FXCollections.observableArrayList();
 
         addRecipeStage = new Stage();
@@ -58,11 +65,57 @@ public class AddRecipe {
         cancelButton.setAlignment(Pos.CENTER);
         cancelButton.setOnAction(action -> addRecipeStage.close());
 
+        Button saveButton = new Button("Add");
+        saveButton.setFocusTraversable(false);
+        saveButton.setMinWidth(100);
+        saveButton.setMinHeight(40);
+        saveButton.setAlignment(Pos.CENTER);
+        saveButton.setOnAction(action -> {
+            RadioButton selectedTasteButton = (RadioButton) tasteGroup.getSelectedToggle();
+            RadioButton selectedTypeButton = (RadioButton) typeGroup.getSelectedToggle();
+            Recipe newRecipe = new Recipe(nameField.getText(), descriptionField.getText(), Taste.getEnumByValue(selectedTasteButton.getText()), Type.getEnumByValue(selectedTypeButton.getText()));
+            List<Ingredient> selectedIngredients = ingredientsTable.getSelectionModel().getSelectedItems();
+            List<Long> selectedIngredientId = selectedIngredients.stream().map(x -> x.getId()).collect(Collectors.toList());
+            List<Step> steps = stepData.stream().map(data ->  new Step(data.getStepOrder(), data.getContent())).collect(Collectors.toList());
+            Query.addRecipe(newRecipe, selectedIngredientId, steps);
+            addRecipeStage.close();
+            MyKitchen.updateRecipeList(MyKitchen.searchText);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Recipe created");
+            alert.setHeaderText("Recipe " + newRecipe.getName() + " created!");
+            alert.setContentText("Continue");
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK) {
+                alert.close();
+            } else {
+                alert.close();
+            }
+        });
+
+        HBox buttonBox = new HBox(20.0);
+        buttonBox.getChildren().add(0, cancelButton);
+        buttonBox.getChildren().add(1, saveButton);
+
         HBox titleBox = new HBox(300.0);
         titleBox.setAlignment(Pos.CENTER_LEFT);
         titleBox.getChildren().add(0, programTitle);
         titleBox.getChildren().add(1, recipeTitle);
-        titleBox.getChildren().add(2, cancelButton);
+        titleBox.getChildren().add(2, buttonBox);
+
+        nameField = new TextField();
+        nameField.setPromptText("Recipe name");
+        nameField.setMinWidth(300.0);
+        nameField.setFocusTraversable(false);
+
+        descriptionField = new TextField();
+        descriptionField.setPromptText("Recipe description");
+        descriptionField.setMinWidth(600.0);
+        descriptionField.setFocusTraversable(false);
+
+        HBox textfieldBox = new HBox(100.0);
+        textfieldBox.setAlignment(Pos.CENTER_LEFT);
+        textfieldBox.getChildren().add(0, nameField);
+        textfieldBox.getChildren().add(1, descriptionField);
 
         Label tasteTitle = new Label();
         tasteTitle.setText("Choose taste:");
@@ -117,13 +170,15 @@ public class AddRecipe {
         radioBox.getChildren().add(1, typeBox);
 
         ingredientsTable = new TableView();
+        ingredientsTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        ingredientsTable.getSelectionModel().setCellSelectionEnabled(true);
         ingredientsTable.setEditable(false);
         ingredientsTable.setMinWidth(1000.0);
         ingredientsTable.setMaxWidth(1000.0);
-        ingredientsTable.setMinHeight(300.0);
-        ingredientsTable.setMaxHeight(300.0);
+        ingredientsTable.setMinHeight(200.0);
+        ingredientsTable.setMaxHeight(200.0);
 
-        TableColumn<Ingredient, String> ingredientColumn = new TableColumn<>("Name");
+        TableColumn<Ingredient, String> ingredientColumn = new TableColumn<>("Name (Hold 'Ctrl' and click to select multiple)");
         ingredientColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         ingredientColumn.setResizable(false);
         ingredientColumn.setSortable(false);
@@ -164,16 +219,16 @@ public class AddRecipe {
         TextField descriptionText = new TextField();
         descriptionText.setMinHeight(300.0);
         descriptionText.setMaxHeight(300.0);
-        descriptionText.setMinWidth(400.0);
-        descriptionText.setMaxWidth(400.0);
+        descriptionText.setMinWidth(300.0);
+        descriptionText.setMaxWidth(300.0);
 
-        Button addDescriptionButton = new Button("Add");
+        Button addDescriptionButton = new Button("Add step");
         addDescriptionButton.setFocusTraversable(false);
-        addDescriptionButton.setMinWidth(100);
+        addDescriptionButton.setMinWidth(200);
         addDescriptionButton.setMinHeight(40);
         addDescriptionButton.setAlignment(Pos.CENTER);
         addDescriptionButton.setOnAction(action -> {
-            Step newStep = new Step(Long.parseLong("1"),Long.parseLong("1"), stepData == null ? 1: stepData.size() +1, descriptionText.getText());
+            Step newStep = new Step(Long.parseLong("1"), Long.parseLong("1"), stepData == null ? 1 : stepData.size() + 1, descriptionText.getText());
             stepData.add(stepData == null ? 0 : stepData.size(), newStep);
             descriptionText.clear();
         });
@@ -187,9 +242,10 @@ public class AddRecipe {
         VBox container = new VBox(30.0);
         container.setAlignment(Pos.CENTER);
         container.getChildren().add(0, titleBox);
-        container.getChildren().add(1, radioBox);
-        container.getChildren().add(2, ingredientsTable);
-        container.getChildren().add(3, stepBox);
+        container.getChildren().add(1, textfieldBox);
+        container.getChildren().add(2, radioBox);
+        container.getChildren().add(3, ingredientsTable);
+        container.getChildren().add(4, stepBox);
 
         addRecipePane.add(container, 0, 0);
 

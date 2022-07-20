@@ -144,7 +144,7 @@ public class Query extends Database {
         String addRecipeQuery = "INSERT INTO recipe (name,description,taste,type) VALUES (?,?,?,?)";
         int recipeId = 0;
         try {
-            PreparedStatement preparedStatement = DBconnect.prepareStatement(addRecipeQuery);
+            PreparedStatement preparedStatement = DBconnect.prepareStatement(addRecipeQuery, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, recipe.getName());
             preparedStatement.setString(2, recipe.getDescription());
             preparedStatement.setString(3, String.valueOf(recipe.getTaste().value));
@@ -169,8 +169,7 @@ public class Query extends Database {
                 PreparedStatement preparedStatement = DBconnect.prepareStatement(addIngredientsRecipeQuery);
                 preparedStatement.setString(1, recipeId.toString());
                 preparedStatement.setString(2, i.toString());
-                preparedStatement.executeUpdate();
-
+                preparedStatement.execute();
             } catch (SQLException ex) {
                 System.out.println("SQL error: " + ex.getMessage());
             }

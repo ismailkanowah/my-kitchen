@@ -22,7 +22,16 @@ public enum Type {
         }
         return null;
     }
-
+    public static Type getEnumByValue(String value) {
+        if (value.equalsIgnoreCase("breakfast")) {
+            return BREAKFAST;
+        } else if (value.equalsIgnoreCase("lunch")) {
+            return LUNCH;
+        } else if (value.equalsIgnoreCase("dinner")) {
+            return DINNER;
+        }
+        return null;
+    }
     private Type(int value) {
         this.value = value;
     }
