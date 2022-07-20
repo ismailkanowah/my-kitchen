@@ -153,7 +153,7 @@ public class ViewRecipe {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
-            Query.deleteRecipe(recipeId);
+            Query.removeRecipe(recipeId);
             MyKitchen.updateRecipeList(MyKitchen.searchText);
             viewRecipeStage.close();
         } else {
