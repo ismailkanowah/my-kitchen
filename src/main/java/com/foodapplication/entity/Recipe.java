@@ -12,6 +12,7 @@ public class Recipe {
     private String description;
 
     private Taste taste;
+
     private Type type;
 
     public Taste getTaste() {
