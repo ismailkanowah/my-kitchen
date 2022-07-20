@@ -53,5 +53,8 @@ public class Step {
         this.recipeId = recipeId;
         this.stepOrder = stepOrder;
         this.content = content;
+    } public Step(Integer stepOrder, String content) {
+        this.stepOrder = stepOrder;
+        this.content = content;
     }
 }
